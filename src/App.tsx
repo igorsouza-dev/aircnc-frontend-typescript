@@ -1,9 +1,17 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './App.css';
 
 import logo from './assets/logo.svg';
+import api from './services/api';
 
 function App() {
+  const [email, setEmail] = useState();
+  const [password, setPassword] = useState();
+
+  async function handleLogin() {
+    const response = await api.post('signin', { email, password });
+    console.log(response.data);
+  }
   return (
     <div className="container">
       <img src={logo} alt="AirCnC" />
@@ -14,10 +22,20 @@ function App() {
         </p>
         <form>
           <label htmlFor="email">E-MAIL *</label>
-          <input type="email" id="email" placeholder="Your e-mail" />
+          <input
+            type="email"
+            id="email"
+            placeholder="Your e-mail"
+            onChange={e => setEmail(e.target.value)}
+          />
           <label htmlFor="password">PASSWORD *</label>
-          <input type="password" id="password" placeholder="Your password" />
-          <button type="submit" className="btn">
+          <input
+            type="password"
+            id="password"
+            onChange={e => setPassword(e.target.value)}
+            placeholder="Your password"
+          />
+          <button type="button" className="btn" onClick={handleLogin}>
             Login
           </button>
         </form>
