@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import { RouteComponentProps } from 'react-router-dom';
+import { Link, RouteComponentProps } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import api from '../../services/api';
+import './styles.css';
 
 interface SpotType {
   company: string;
-  price: number;
+  price?: number;
   thumbnail: string;
+  thumbnail_url: string;
   techs: string;
   id: number;
 }
@@ -42,12 +44,20 @@ const Dashboard: React.FC<RouteComponentProps> = ({ history }) => {
       <ul className="spot-list">
         {spots.map(spot => (
           <li key={spot.id}>
-            <header />
+            <header
+              style={{
+                backgroundImage: `url(${spot.thumbnail_url})`,
+                backgroundColor: '#ddd',
+              }}
+            />
             <strong>{spot.company}</strong>
-            <span>{spot.price}</span>
+            <span>{spot.price ? `$${spot.price}/day` : 'FREE'}</span>
           </li>
         ))}
       </ul>
+      <Link to="/new">
+        <button className="btn">Create another spot</button>
+      </Link>
     </>
   );
 };
