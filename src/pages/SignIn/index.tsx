@@ -1,16 +1,27 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, RouteComponentProps } from 'react-router-dom';
+import Swal from 'sweetalert2';
 import api from '../../services/api';
 
-export default function SignIn() {
-  const [email, setEmail] = useState();
-  const [password, setPassword] = useState();
+const SignIn: React.FC<RouteComponentProps> = ({ history }) => {
+  const [email, setEmail] = useState<string>();
+  const [password, setPassword] = useState<string>();
 
   async function handleLogin() {
-    const response = await api.post('signin', { email, password });
-    const { token } = response.data;
-    localStorage.setItem('aircnc_token', token);
+    try {
+      const response = await api.post('signin', { email, password });
+      const { token } = response.data;
+      localStorage.setItem('aircnc_token', token);
+      history.push('/dashboard');
+    } catch (e) {
+      Swal.fire({
+        title: 'Error!',
+        text: e.response.data.error,
+        icon: 'error',
+      });
+    }
   }
+
   return (
     <>
       <p>
@@ -39,4 +50,6 @@ export default function SignIn() {
       </form>
     </>
   );
-}
+};
+
+export default SignIn;

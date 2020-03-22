@@ -1,16 +1,32 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, RouteComponentProps } from 'react-router-dom';
+import Swal from 'sweetalert2';
 import api from '../../services/api';
 
-export default function SignUp() {
-  const [name, setName] = useState();
-  const [email, setEmail] = useState();
-  const [password, setPassword] = useState();
+const SignUp: React.FC<RouteComponentProps> = ({ history }) => {
+  const [name, setName] = useState<string>();
+  const [email, setEmail] = useState<string>();
+  const [password, setPassword] = useState<string>();
 
   async function handleSignUp() {
-    const response = await api.post('signup', { email, password, name });
-    const { token } = response.data;
-    localStorage.setItem('aircnc_token', token);
+    try {
+      const response = await api.post('signup', { email, password, name });
+      const { token } = response.data;
+      localStorage.setItem('aircnc_token', token);
+      Swal.fire({
+        title: 'Success!',
+        text: 'You signed up successfully!',
+        icon: 'success',
+      }).then(e => {
+        history.push('/');
+      });
+    } catch (e) {
+      Swal.fire({
+        title: 'Error!',
+        text: e.response.data.error,
+        icon: 'error',
+      });
+    }
   }
   return (
     <>
@@ -47,4 +63,6 @@ export default function SignUp() {
       </form>
     </>
   );
-}
+};
+
+export default SignUp;
